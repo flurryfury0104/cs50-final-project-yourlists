@@ -1,0 +1,266 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Homepage
+{% endblock %}
+
+{% block main %}
+
+    <script>
+        function ClearFields() {
+            document.getElementById("duedate_s").value = "";
+        }
+        function ClearFieldt() {
+            document.getElementById("duedate_t").value = "";
+        }
+    </script>
+
+    <div class="row">
+
+        <div class="col-12 col-xl-6 border-xl-right pb-5">
+            <h1 class="lead mb-4">Shopping Lists</h1>
+            <form action="/addshopping" method="post">
+                <div class="form-group row">
+                    <div class="col-2 col-sm-3 col-md-4 col-xl-3 text-right">
+                        <label for="listname_s">List:</label>
+                    </div>
+                    <div class="col-10 col-sm-7 col-md-5 col-xl-7 input-group">
+                        <input class="form-control" name="listname_s" placeholder="Untitled" type="text">
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="col-2 col-sm-3 col-md-4 col-xl-3 text-right">
+                        <label for="duedate_s">Due:</label>
+                    </div>
+                    <div class="col-10 col-sm-7 col-md-5 col-xl-7 input-group">
+                        <input class="form-control" id="duedate_s" name="duedate_s" type="date">
+                        <div class="input-group-append">
+                            <button class="btn btn-outline-secondary" type="button" onclick="ClearFields()">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <button class="btn btn-primary" type="submit">Add</button>
+            </form>
+            <table class="table rounded table-borderless table-striped-1 bg-1 table-sm mt-5">
+                <thead>
+                    <tr class="bg-1b">
+                        <th scope="col">Shopping List</th>
+                        <th scope="col">Due date</th>
+                        <th scope="col">Completed on</th>
+                        <th scope="col">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for shopping in shoppings %}
+                        {% if shopping.completed == False %}
+                            {% if shopping.duedate != "-" and shopping.duedate <= today %}
+                                <tr>
+                                    <td>
+                                        <a class="btn text-danger" href="/editshopping/{{ shopping.shoppingid }}">
+                                            {{ shopping.listname }}
+                                        </a>
+                                    </td>
+                                    <td>
+                                        <a class="btn text-danger" href="/editshopping/{{ shopping.shoppingid }}">
+                                            {{ shopping.duedate }}
+                                        </a>
+                                    </td>
+                                    <td>
+                                        <a class="btn text-danger" href="/editshopping/{{ shopping.shoppingid }}">-</a>
+                                    </td>
+                                    <td>
+                                        <a class="btn" href="/tickshopping/{{ shopping.shoppingid }}">
+                                            <i class="fas fa-check" style="color:#52b788;"></i>
+                                        </a>
+                                        <a class="btn" href="/deleteshopping/{{ shopping.shoppingid }}">
+                                            <i class="fas fa-times" style="color:#f25c54;"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                            {% else %}
+                                <tr>
+                                    <td>
+                                        <a class="btn text-primary" href="/editshopping/{{ shopping.shoppingid }}">
+                                            {{ shopping.listname }}
+                                        </a>
+                                    </td>
+                                    <td>
+                                        <a class="btn text-primary" href="/editshopping/{{ shopping.shoppingid }}">
+                                            {{ shopping.duedate }}
+                                        </a>
+                                    </td>
+                                    <td>
+                                        <a class="btn text-primary" href="/editshopping/{{ shopping.shoppingid }}">-</a>
+                                    </td>
+                                    <td>
+                                        <a class="btn" href="/tickshopping/{{ shopping.shoppingid }}">
+                                            <i class="fas fa-check" style="color:#52b788;"></i>
+                                        </a>
+                                        <a class="btn" href="/deleteshopping/{{ shopping.shoppingid }}">
+                                            <i class="fas fa-times" style="color:#f25c54;"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                            {% endif %}
+                        {% else %}
+                            <tr>
+                                <td>
+                                    <div class="line text-secondary"><s>{{ shopping.listname }}</s></div>
+                                </td>
+                                <td>
+                                    <div class="line text-secondary">{{ shopping.duedate }}</div>
+                                </td>
+                                <td>
+                                    <div class="line text-secondary">{{ shopping.completedtime }}</div>
+                                </td>
+                                <td>
+                                    <a class="btn" href="/deleteshopping/{{ shopping.shoppingid }}">
+                                        <i class="fas fa-times" style="color:#f25c54;"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                        {% endif %}
+                    {% endfor %}
+                </tbody>
+            </table>
+            <div class="text-left">
+                <form action="/del_cplt_shoppinglist" method="post"
+                      onSubmit="return confirm('Are you sure you want to delete all completed shopping lists?');">
+                    <button class="btn btn-danger m-2" type="submit">
+                        <i class="far fa-trash-alt"></i> Delete all completed</button>
+                </form>
+                <form action="/del_all_shoppinglist" method="post"
+                      onSubmit="return confirm('Are you sure you want to delete all shopping lists?');">
+                    <button class="btn btn-danger m-2" type="submit">
+                        <i class="far fa-trash-alt"></i> Delete all</button>
+                </form>
+            </div>
+        </div>
+
+        <div class="col-12 col-xl-6">
+            <h1 class="lead mb-4">To-do Lists</h1>
+            <form action="/addtodo" method="post">
+                <div class="form-group row">
+                    <div class="col-2 col-sm-3 col-md-4 col-xl-3 text-right">
+                        <label for="listname_t">List:</label>
+                    </div>
+                    <div class="col-10 col-sm-7 col-md-5 col-xl-7 input-group">
+                        <input class="form-control" name="listname_t" placeholder="Untitled" type="text">
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="col-2 col-sm-3 col-md-4 col-xl-3 text-right">
+                        <label for="duedate_t">Due:</label>
+                    </div>
+                    <div class="col-10 col-sm-7 col-md-5 col-xl-7 input-group">
+                        <input class="form-control" id="duedate_t" name="duedate_t" type="date">
+                        <div class="input-group-append">
+                            <button class="btn btn-outline-secondary" type="button" onclick="ClearFieldt()">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <button class="btn btn-success" type="submit">Add</button>
+            </form>
+            <table class="table rounded table-borderless table-striped-2 bg-2 table-sm mt-5">
+                <thead>
+                    <tr class="bg-2b">
+                        <th scope="col">To-do List</th>
+                        <th scope="col">Due date</th>
+                        <th scope="col">Completed on</th>
+                        <th scope="col">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for todo in todos %}
+                        {% if todo.completed == False %}
+                            {% if todo.duedate != "-" and todo.duedate <= today %}
+                                <tr>
+                                    <td>
+                                        <a class="btn text-danger" href="/edittodo/{{ todo.todoid }}">
+                                            {{ todo.listname }}
+                                        </a>
+                                    </td>
+                                    <td>
+                                        <a class="btn text-danger" href="/edittodo/{{ todo.todoid }}">
+                                            {{ todo.duedate }}
+                                        </a>
+                                    </td>
+                                    <td>
+                                        <a class="btn text-danger" href="/edittodo/{{ todo.todoid }}">-</a>
+                                    </td>
+                                    <td>
+                                        <a class="btn" href="/ticktodo/{{ todo.todoid }}">
+                                            <i class="fas fa-check" style="color:#52b788;"></i>
+                                        </a>
+                                        <a class="btn" href="/deletetodo/{{ todo.todoid }}">
+                                            <i class="fas fa-times" style="color:#f25c54;"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                            {% else %}
+                                <tr>
+                                    <td>
+                                        <a class="btn text-primary" href="/edittodo/{{ todo.todoid }}">
+                                            {{ todo.listname }}
+                                        </a>
+                                    </td>
+                                    <td>
+                                        <a class="btn text-primary" href="/edittodo/{{ todo.todoid }}">
+                                            {{ todo.duedate }}
+                                        </a>
+                                    </td>
+                                    <td>
+                                        <a class="btn text-primary" href="/edittodo/{{ todo.todoid }}">-</a>
+                                    </td>
+                                    <td>
+                                        <a class="btn" href="/ticktodo/{{ todo.todoid }}">
+                                            <i class="fas fa-check" style="color:#52b788;"></i>
+                                        </a>
+                                        <a class="btn" href="/deletetodo/{{ todo.todoid }}">
+                                            <i class="fas fa-times" style="color:#f25c54;"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                            {% endif %}
+                        {% else %}
+                            <tr>
+                                <td>
+                                    <div class="line text-secondary"><s>{{ todo.listname }}</s></div>
+                                </td>
+                                <td>
+                                    <div class="line text-secondary">{{ todo.duedate }}</div>
+                                </td>
+                                <td>
+                                    <div class="line text-secondary">{{ todo.completedtime }}</div>
+                                </td>
+                                <td>
+                                    <a class="btn" href="/deletetodo/{{ todo.todoid }}">
+                                        <i class="fas fa-times" style="color:#f25c54;"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                        {% endif %}
+                    {% endfor %}
+                </tbody>
+            </table>
+            <div class="text-left">
+                <form action="/del_cplt_todolist" method="post"
+                      onSubmit="return confirm('Are you sure you want to delete all completed todo lists?');">
+                    <button class="btn btn-danger m-2" type="submit">
+                        <i class="far fa-trash-alt"></i> Delete all completed</button>
+                </form>
+                <form action="/del_all_todolist" method="post"
+                      onSubmit="return confirm('Are you sure you want to delete all todo lists?');">
+                    <button class="btn btn-danger m-2" type="submit">
+                        <i class="far fa-trash-alt"></i> Delete all</button>
+                </form>
+            </div>
+        </div>
+
+    </div>
+
+{% endblock %}

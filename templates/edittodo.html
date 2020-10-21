@@ -1,0 +1,146 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Edit to-do list
+{% endblock %}
+
+{% block main %}
+
+    <script>
+        function ClearFields() {
+         document.getElementById("duedate").value = "";
+        }
+        function ClearFieldt() {
+            document.getElementById("duedate_t").value = "";
+        }
+    </script>
+
+    <div class="row">
+
+        <div class="col-12 col-lg-5 border-lg-right pb-4 mt-4">
+            <h1 class="lead mb-4">To-do List Details</h1>
+            <form action="/edittodo/{{ todoid }}" method="post">
+                <div class="form-group row">
+                    <div class="col-12 col-lg-4 text-lg-right">
+                        <label for="listname">To-do List:</label>
+                    </div>
+                    <div class="hidden-xs col-sm-2 col-md-3 col-lg-0"></div>
+                    <div class="col-12 col-sm-8 col-md-6 col-lg-8 col-xl-7 input-group">
+                        <input class="form-control" name="listname" type="text" value="{{ listname }}">
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="col-12 col-lg-4 text-lg-right">
+                        <label for="duedate">Due date:</label>
+                    </div>
+                    <div class="hidden-xs col-sm-2 col-md-3 col-lg-0"></div>
+                    <div class="col-12 col-sm-8 col-md-6 col-lg-8 col-xl-7 input-group">
+                        <input class="form-control" id="duedate" name="duedate" type="date" value="{{ duedate }}">
+                        <div class="input-group-append">
+                            <button class="btn btn-outline-secondary" type="button" onclick="ClearFields()">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <input hidden type="submit" id="done_t"/>
+            </form>
+        </div>
+
+        <div class="col-12 col-lg-7 mt-4">
+            <h1 class="lead mb-4">Items</h1>
+            <form action="/addtodoitem/{{ todoid }}" method="post">
+                <div class="form-group row">
+                    <div class="col-2 col-md-2 col-lg-1 col-xl-2 text-right">
+                        <label for="itemname">Item:</label>
+                    </div>
+                    <div class="col-9 col-md-3 col-lg-3 pb-3 pb-md-0 input-group">
+                        <input class="form-control" name="itemname" placeholder="Untitled" type="text">
+                    </div>
+                    <div class="col-2 col-md-1 text-right">
+                        <label for="duedate_t">Due:</label>
+                    </div>
+                    <div class="col-9 col-md-4 col-lg-5 col-xl-4 pb-3 pb-md-0 input-group">
+                        <input class="form-control" id="duedate_t" name="duedate_t" type="date">
+                        <div class="input-group-append">
+                            <button class="btn btn-outline-secondary" type="button" onclick="ClearFieldt()">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="col col-md-2 col-lg-1 text-md-left">
+                        <button class="btn btn-success" type="submit">Add</button>
+                    </div>
+                </div>
+            </form>
+            <table class="table rounded table-borderless table-striped-2 bg-2 table-sm mt-3">
+                <thead>
+                    <tr class="bg-2b">
+                        <th scope="col">Item</th>
+                        <th scope="col">Due date</th>
+                        <th scope="col">Completed on</th>
+                        <th scope="col">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in items %}
+                        {% if item.completed == False%}
+                            {% if item.duedate != "-" and item.duedate <= today %}
+                                <tr>
+                                    <td class="text-danger"><div class="line">{{ item.itemname }}</div></td>
+                                    <td class="text-danger"><div class="line">{{ item.duedate }}</div></td>
+                                    <td class="text-danger"><div class="line">-</div></td>
+                                    <td>
+                                        <a class="btn" href="/ticktodoitem/{{ item.itemid }}/{{ todoid }}">
+                                            <i class="fas fa-check" style="color:#52b788;"></i>
+                                        </a>
+                                        <a class="btn" href="/deletetodoitem/{{ item.itemid }}/{{ todoid }}">
+                                            <i class="fas fa-times" style="color:#f25c54;"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                            {% else %}
+                                <tr>
+                                    <td><div class="line">{{ item.itemname }}</div></td>
+                                    <td><div class="line">{{ item.duedate }}</div></td>
+                                    <td><div class="line">-</div></td>
+                                    <td>
+                                        <a class="btn" href="/ticktodoitem/{{ item.itemid }}/{{ todoid }}">
+                                            <i class="fas fa-check" style="color:#52b788;"></i>
+                                        </a>
+                                        <a class="btn" href="/deletetodoitem/{{ item.itemid }}/{{ todoid }}">
+                                            <i class="fas fa-times" style="color:#f25c54;"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                            {% endif %}
+                        {% else %}
+                            <tr>
+                                <td><div class="line text-secondary"><s>{{ item.itemname }}</s></div></td>
+                                <td><div class="line text-secondary">{{ item.duedate }}</div></td>
+                                <td><div class="line text-secondary">{{ item.completedtime }}</div></td>
+                                <td>
+                                    <a class="btn" href="/deletetodoitem/{{ item.itemid }}/{{ todoid }}">
+                                        <i class="fas fa-times" style="color:#f25c54;"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                        {% endif %}
+                    {% endfor %}
+                </tbody>
+            </table>
+            <div class="text-left">
+                <form action="/del_cplt_todoitem/{{ todoid }}" method="post"
+                      onSubmit="return confirm('Are you sure you want to delete all completed items?');">
+                    <button class="btn btn-danger m-2" type="submit">
+                        <i class="far fa-trash-alt"></i> Delete all completed</button>
+                </form>
+                <form action="/del_all_todoitem/{{ todoid }}" method="post"
+                      onSubmit="return confirm('Are you sure you want to delete all items?');">
+                    <button class="btn btn-danger m-2" type="submit">
+                        <i class="far fa-trash-alt"></i> Delete all</button>
+                </form>
+            </div>
+        </div>
+
+{% endblock %}
