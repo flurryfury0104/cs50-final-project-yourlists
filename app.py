@@ -110,6 +110,8 @@ def editshopping(shoppingid):
         # Extract inputs
         listname = request.form.get("listname")
         duedate = request.form.get("duedate")
+        if not duedate:
+            duedate = None
 
         # Update shopping list details in "shopping" table
         edit_shopping_list(shoppingid, listname, duedate)
@@ -234,6 +236,8 @@ def edittodo(todoid):
         # Extract inputs
         listname = request.form.get("listname")
         duedate = request.form.get("duedate")
+        if not duedate:
+            duedate = None
 
         # Update to-do list details in "to-do" table
         edit_todo_list(todoid, listname, duedate)
