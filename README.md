@@ -1,10 +1,12 @@
 # YourLists: A Shopping List and Todo List Web App
 
+&nbsp;
 ## A CS50 Final Project
 Made as a [final project](https://cs50.harvard.edu/x/2020/project/) for the course [CS50's Introduction to Computer Science](https://www.edx.org/course/cs50s-introduction-to-computer-science), *YourLists* helps users manage their shopping lists as well as todo lists. *YourLists* is a Flask app deployed on [Heroku](https://www.heroku.com/) and can be accessed at https://yourlists.herokuapp.com/.
 
 *YourLists* utilizes some elements provided by CS50 for the [Finance](https://cs50.harvard.edu/x/2020/tracks/web/finance/) web app project, which are the file `layout.html` and the methods `apology()`, `login_required()`, `login()`, `logout()`.
 
+&nbsp;
 ## Using *YourLists*
 ### Logging In
 *YourLists* provides basic functionalities for users to  **register**, **log in**, **change password**, **log out**.
@@ -30,6 +32,7 @@ The inside of a Todo List is very similar to that of a Shopping List, with addit
 
 ![Image of Todo List Details](screenshots/EditTodoList.png)
 
+&nbsp;
 ## The Database
 *YourLists* utilizes [Heroku's Postgres add-on](https://www.heroku.com/postgres) for database management. The [PostgreSQL](https://www.postgresql.org/) database connected to Heroku is created with [pgAdmin](https://www.pgadmin.org/) using the schema below:
 
